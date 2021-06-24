@@ -3,6 +3,7 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'Lato', sans-serif;
+    font-size: 3vmin;
     background: ${(props) => props.theme.colors.darkPrimary};
     padding: 30px 40px;
     -webkit-font-smoothing: antialiased;

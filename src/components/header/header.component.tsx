@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { WindupChildren, useRewind, Pace } from "windups";
+
 import * as S from "./header.styles";
 import {
   home,
@@ -10,10 +13,33 @@ import {
 } from "../../routes";
 
 const Header = () => {
+  const [triggerWindup, setTriggerWindup] = useState(false);
+
+  // WindupChildren can only trigger rewind from a child component
+  // render this dummy div that fills the Logo/home page button to
+  // trigger rewind on mouse leave
+  const WindupDummyDiv = () => {
+    const rewind = useRewind();
+    return (
+      <S.WindupDummyDiv
+        onMouseLeave={() => {
+          rewind();
+          setTriggerWindup(false);
+        }}
+      />
+    );
+  };
+
   return (
     <S.Header>
-      <S.HomePageLink to={home}>
+      <S.HomePageLink to={home} onMouseEnter={() => setTriggerWindup(true)}>
         <span>&gt;rwd</span>
+        {triggerWindup && (
+          <WindupChildren>
+            <WindupDummyDiv />
+            <Pace ms={50}>{"/home"}</Pace>
+          </WindupChildren>
+        )}
         <S.BlinkingCursor>_</S.BlinkingCursor>
       </S.HomePageLink>
       <S.OptionsContainer>

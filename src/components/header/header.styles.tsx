@@ -21,9 +21,21 @@ export const HomePageLink = styled(Link)`
   border: solid 1px;
   padding: 5px;
   margin-right: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 `;
 
-/* Animation effect for blinking cursor in logo/homepage link*/
+/* Allows the windup text to rewind by providing an element to call rewind from*/
+export const WindupDummyDiv = styled.div`
+  width: 105%;
+  height: 105%;
+  background-color: transparent;
+  position: absolute;
+`;
+
+/* Animation for blinking cursor in logo/homepage link*/
 const blink = (props: any) => keyframes`
   from, to {
     color: transparent;
