@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { WindupChildren, useRewind, Pace } from "windups";
 
 import * as S from "./header.styles";
 import {
@@ -13,35 +12,42 @@ import {
 } from "../../routes";
 
 const Header = () => {
-  const [triggerWindup, setTriggerWindup] = useState(false);
+  const onHoverTextFull = "/home";
+  const [onHoverText, setOnHoverText] = useState("");
 
-  // WindupChildren can only trigger rewind from a child component
-  // render this dummy div that fills the Logo/home page button to
-  // trigger rewind on mouse leave
-  const WindupDummyDiv = () => {
-    const rewind = useRewind();
-    return (
-      <S.WindupDummyDiv
-        onMouseLeave={() => {
-          rewind();
-          setTriggerWindup(false);
-        }}
-      />
-    );
+  const typeEffect = (string = "", currIndex = 0, text = onHoverTextFull) => {
+    if (string.length < text.length) {
+      const newString = string.concat(text.charAt(currIndex));
+      setOnHoverText(newString);
+      setTimeout(() => typeEffect(newString, currIndex + 1), 75);
+    }
+  };
+
+  const backspaceEffect = (
+    string = onHoverTextFull,
+    currIndex = onHoverTextFull.length - 1
+  ) => {
+    if (string.length > 0) {
+      const newString = string.substring(0, currIndex);
+      setOnHoverText(newString);
+      setTimeout(() => backspaceEffect(newString, currIndex - 1), 60);
+    }
   };
 
   return (
     <S.Header>
-      <S.HomePageLink to={home} onMouseEnter={() => setTriggerWindup(true)}>
-        <span>&gt;rwd</span>
-        {triggerWindup && (
-          <WindupChildren>
-            <WindupDummyDiv />
-            <Pace ms={50}>{"/home"}</Pace>
-          </WindupChildren>
-        )}
-        <S.BlinkingCursor>_</S.BlinkingCursor>
-      </S.HomePageLink>
+      <S.LogoBorder>
+        <S.LogoBackground>
+          <S.Logo
+            to={home}
+            onMouseEnter={() => typeEffect()}
+            onMouseLeave={() => backspaceEffect()}
+          >
+            <span>&gt;rwd{onHoverText}</span>
+            <S.BlinkingCursor>_</S.BlinkingCursor>
+          </S.Logo>
+        </S.LogoBackground>
+      </S.LogoBorder>
       <S.OptionsContainer>
         <S.OptionLink to={about}>About</S.OptionLink>
         <S.Spacer>{"//"}</S.Spacer>

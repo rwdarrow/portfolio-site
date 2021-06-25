@@ -1,11 +1,14 @@
+import * as S from "./home.styles";
+
 const HomePage = () => {
-  return(
+  return (
     <>
-      <h1>Robert</h1>
-      <h1>Walter</h1>
-      <h1>Darrow</h1>
+      <S.HomePageStyle />
+      <S.BreakerBorder>
+        <S.Breaker></S.Breaker>
+      </S.BreakerBorder>
     </>
-  )
-}
+  );
+};
 
 export default HomePage;
