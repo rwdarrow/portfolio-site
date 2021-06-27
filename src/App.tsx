@@ -22,13 +22,13 @@ const App = () => {
       <BrowserRouter>
         <Header />
         <Switch>
-          <Route exact path={routes.home} component={HomePage} />
-          <Route exact path={routes.about} component={About} />
-          <Route exact path={routes.skills} component={Skills} />
-          <Route exact path={routes.experience} component={Experience} />
-          <Route exact path={routes.education} component={Education} />
-          <Route exact path={routes.projects} component={Projects} />
-          <Route exact path={routes.contact} component={Contact} />
+          <Route exact path={routes.home.route} component={HomePage} />
+          <Route exact path={routes.about.route} component={About} />
+          <Route exact path={routes.skills.route} component={Skills} />
+          <Route exact path={routes.experience.route} component={Experience} />
+          <Route exact path={routes.education.route} component={Education} />
+          <Route exact path={routes.projects.route} component={Projects} />
+          <Route exact path={routes.contact.route} component={Contact} />
           <Route component={NotFound} />
         </Switch>
       </BrowserRouter>

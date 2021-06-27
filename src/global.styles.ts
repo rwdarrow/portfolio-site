@@ -9,9 +9,20 @@ export const palette = {
 };
 
 export const GlobalStyle = createGlobalStyle`
+  :root {
+    font-size: 2.35vw;
+
+    @media screen and (max-width: 768px) {
+      font-size: 20px;
+    }
+
+    @media screen and (min-width: 1600px) {
+      font-size: 40px;
+    }
+  }
+
   body {
-    font-family: 'Lato', sans-serif;
-    font-size: 3vmin;
+    font-family: 'Lato', sans-serif;  
     background: ${palette.lightPrimary};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

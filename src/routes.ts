@@ -1,7 +1,34 @@
-export const home = "/";
-export const about = "/about";
-export const skills = "/skills";
-export const experience = "/experience";
-export const education = "/education";
-export const projects = "/projects";
-export const contact = "/contact";
+export const home = {
+  route: "/",
+  name: "Home",
+};
+
+export const about = {
+  route: "/about",
+  name: "About",
+};
+
+export const skills = {
+  route: "/skills",
+  name: "Skills",
+};
+
+export const experience = {
+  route: "/experience",
+  name: "Experience",
+};
+
+export const education = {
+  route: "/education",
+  name: "Education",
+};
+
+export const projects = {
+  route: "/projects",
+  name: "Projects",
+};
+
+export const contact = {
+  route: "/contact",
+  name: "Contact",
+};
