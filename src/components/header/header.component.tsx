@@ -2,6 +2,8 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 
+import TypedText from "../typed-text/typed-text.component";
+
 import useWindowDimensions from "../../hooks/use-window-dimensions.hook";
 
 import * as S from "./header.styles";
@@ -20,6 +22,7 @@ const Header = () => {
   const onHoverTextFull = "/home";
   const [onHoverText, setOnHoverText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isAnimationSuppressed, setIsAnimationSuppressed] = useState(false);
 
   const { width } = useWindowDimensions();
 
@@ -45,11 +48,17 @@ const Header = () => {
   return (
     <S.Header>
       <S.LogoBorder
-        onMouseEnter={() => typeEffect()}
-        onMouseLeave={() => backspaceEffect()}
+        onMouseEnter={() => !isAnimationSuppressed && typeEffect()}
+        onMouseLeave={() => !isAnimationSuppressed && backspaceEffect()}
+        onTouchStart={() => setIsAnimationSuppressed(true)}
       >
         <S.LogoBackground>
           <S.Logo to={home.route}>
+            <TypedText
+              text={["/home", "/more"]}
+              element="span"
+              cursorString="_"
+            ></TypedText>
             <span>&gt;rwd{onHoverText}</span>
             <S.BlinkingCursor>_</S.BlinkingCursor>
           </S.Logo>
@@ -65,11 +74,11 @@ const Header = () => {
               variants={{
                 open: {
                   opacity: 1,
-                  width: "auto",
+                  x: "0%",
                 },
                 closed: {
                   opacity: width > 768 ? 0 : 1,
-                  width: 0,
+                  x: "100%",
                 },
               }}
               transition={{

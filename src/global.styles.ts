@@ -17,7 +17,7 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     @media screen and (min-width: 1600px) {
-      font-size: 40px;
+      font-size: 30px;
     }
   }
 
@@ -26,10 +26,6 @@ export const GlobalStyle = createGlobalStyle`
     background: ${palette.lightPrimary};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    color: ${palette.lightPrimary};
   }
 
   a {

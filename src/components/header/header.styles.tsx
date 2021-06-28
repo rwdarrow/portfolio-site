@@ -20,6 +20,7 @@ const gradient = css`
     ${palette.mainBrand}
   );
   background-size: 400% 100%;
+  transform: rotateZ(360deg);
   animation: ${gradientAnimation} 5s linear infinite;
 `;
 
@@ -27,11 +28,7 @@ export const Header = styled.span`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1rem;
-
-  @media screen and (max-width: 768px) {
-    padding: 0.5rem 0.5rem;
-  }
+  padding: 0.5rem 0.5rem;
 `;
 
 export const LogoBorder = styled.div`
@@ -39,10 +36,12 @@ export const LogoBorder = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0.15rem;
+  padding: 0.16rem;
 
   &:hover {
-    animation: ${gradientAnimation} 1s linear infinite;
+    @media (hover: hover) and (pointer: fine) {
+      animation: ${gradientAnimation} 1s linear infinite;
+    }
   }
 `;
 
@@ -57,16 +56,23 @@ export const Logo = styled(Link)`
   font-size: larger;
   padding: 0.12rem;
   margin-right: 0.34em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: inline;
   position: relative;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  border: none;
+
+  &:focus {
+    outline-width: 0 !important;
+  }
 
   &:hover {
-    animation: ${gradientAnimation} 1s linear infinite;
+    @media (hover: hover) and (pointer: fine) {
+      animation: ${gradientAnimation} 1s linear infinite;
+    }
   }
 `;
 
@@ -97,7 +103,6 @@ export const NavbarContent = styled(motion.div)`
     right: 0;
     top: 0;
     bottom: 0;
-    width: 75vw;
     height: 100vh;
     z-index: 1;
     background: ${palette.mainBrand};
