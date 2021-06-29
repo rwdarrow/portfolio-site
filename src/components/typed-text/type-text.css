@@ -1,0 +1,27 @@
+@keyframes blinkForGradientText {
+  from,
+  to {
+    background: #f4faff;
+  }
+  50% {
+    background: transparent;
+  }
+}
+
+.styleForGradientText {
+  animation: blinkForGradientText 1s step-end infinite;
+}
+
+@keyframes blink {
+  from,
+  to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.defaultStyle {
+  animation: blink 1s step-end infinite;
+}

@@ -54,13 +54,14 @@ const Header = () => {
       >
         <S.LogoBackground>
           <S.Logo to={home.route}>
+            <span>&gt;rwd</span>
             <TypedText
-              text={["/home", "/more"]}
+              text={"/home"}
               element="span"
               cursorString="_"
+              hasGradientText={true}
+              suppressAnimation={isAnimationSuppressed}
             ></TypedText>
-            <span>&gt;rwd{onHoverText}</span>
-            <S.BlinkingCursor>_</S.BlinkingCursor>
           </S.Logo>
         </S.LogoBackground>
       </S.LogoBorder>
