@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 
-import TypedText from "../typed-text/typed-text.component";
+import TypedText, { TypedTextRef } from "../typed-text/typed-text.component";
 
 import useWindowDimensions from "../../hooks/use-window-dimensions.hook";
 
@@ -19,55 +19,53 @@ import {
 
 const Header = () => {
   const currentRoute = useLocation().pathname;
-  const onHoverTextFull = "/home";
-  const [onHoverText, setOnHoverText] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isAnimationSuppressed, setIsAnimationSuppressed] = useState(false);
 
   const { width } = useWindowDimensions();
 
-  const typeEffect = (string = "", currIndex = 0, text = onHoverTextFull) => {
-    if (string.length < text.length) {
-      const newString = string.concat(text.charAt(currIndex));
-      setOnHoverText(newString);
-      setTimeout(() => typeEffect(newString, currIndex + 1), 75);
+  const typedTextRef = useRef<TypedTextRef>(null);
+
+  const type = () => {
+    if (typedTextRef.current) {
+      typedTextRef.current.type();
     }
   };
 
-  const backspaceEffect = (
-    string = onHoverTextFull,
-    currIndex = onHoverTextFull.length - 1
-  ) => {
-    if (string.length > 0) {
-      const newString = string.substring(0, currIndex);
-      setOnHoverText(newString);
-      setTimeout(() => backspaceEffect(newString, currIndex - 1), 60);
+  const backspace = () => {
+    if (typedTextRef.current) {
+      typedTextRef.current.backspace();
     }
   };
 
   return (
     <S.Header>
       <S.LogoBorder
-        onMouseEnter={() => !isAnimationSuppressed && typeEffect()}
-        onMouseLeave={() => !isAnimationSuppressed && backspaceEffect()}
+        onMouseEnter={() => type()}
+        onMouseLeave={() => backspace()}
         onTouchStart={() => setIsAnimationSuppressed(true)}
       >
         <S.LogoBackground>
           <S.Logo to={home.route}>
             <span>&gt;rwd</span>
             <TypedText
+              ref={typedTextRef}
+              onStart={false}
               text={"/home"}
               element="span"
               cursorString="_"
               hasGradientText={true}
               suppressAnimation={isAnimationSuppressed}
+              hideCursorBeforeAnimationStart={false}
+              showCursorIfAnimationSuppressed={true}
             ></TypedText>
           </S.Logo>
         </S.LogoBackground>
       </S.LogoBorder>
       <S.NavbarContainer>
         <AnimatePresence initial={false}>
-          {isOpen && (
+          {isNavbarOpen && (
             <S.NavbarContent
               initial="closed"
               animate="open"
@@ -90,7 +88,7 @@ const Header = () => {
               <S.OptionLink
                 selected={currentRoute === about.route}
                 to={about.route}
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
               >
                 {about.name}
               </S.OptionLink>
@@ -98,7 +96,7 @@ const Header = () => {
               <S.OptionLink
                 selected={currentRoute === skills.route}
                 to={skills.route}
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
               >
                 {skills.name}
               </S.OptionLink>
@@ -106,7 +104,7 @@ const Header = () => {
               <S.OptionLink
                 selected={currentRoute === experience.route}
                 to={experience.route}
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
               >
                 {experience.name}
               </S.OptionLink>
@@ -114,7 +112,7 @@ const Header = () => {
               <S.OptionLink
                 selected={currentRoute === education.route}
                 to={education.route}
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
               >
                 {education.name}
               </S.OptionLink>
@@ -122,7 +120,7 @@ const Header = () => {
               <S.OptionLink
                 selected={currentRoute === projects.route}
                 to={projects.route}
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
               >
                 {projects.name}
               </S.OptionLink>
@@ -130,14 +128,17 @@ const Header = () => {
               <S.OptionLink
                 selected={currentRoute === contact.route}
                 to={contact.route}
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
               >
                 {contact.name}
               </S.OptionLink>
             </S.NavbarContent>
           )}
         </AnimatePresence>
-        <S.NavMenuButton open={isOpen} onClick={() => setIsOpen(!isOpen)}>
+        <S.NavMenuButton
+          open={isNavbarOpen}
+          onClick={() => setIsNavbarOpen(!isNavbarOpen)}
+        >
           <div />
           <div />
           <div />

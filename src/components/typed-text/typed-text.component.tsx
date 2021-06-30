@@ -1,7 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef } from "react";
+import {
+  forwardRef,
+  useState,
+  useEffect,
+  useImperativeHandle,
+  createElement,
+} from "react";
 
 import "./type-text.css";
+
+export type TypedTextRef = {
+  type: () => void;
+  backspace: () => void;
+};
 
 type TypedTextProps = {
   /** Text to be typed. Single strings will type out remain visible unless
@@ -12,168 +23,219 @@ type TypedTextProps = {
   /** The HTML element to render the text in */
   element: string;
   /** Props to pass to the HTML element. */
-  elementProps?: {} | null;
-  elementStyles?: {} | null;
+  elementProps?: {};
+  elementStyles?: {};
+  /** Toggles whether or not to animate on start. */
+  onStart?: boolean;
+  /** Toggles whether or not to loop the animation. */
+  loop?: boolean;
   /** The speed at which text type out in milliseconds. Recommended to be half
-   * of backspace speed. */
+   * the duration of backspace speed. */
   typeSpeed?: number;
   /** How long after mounting the component to trigger the animation start in ms.*/
   startDelay?: number;
+  /** How long after starting the animation to start typing. */
+  startTypingDelay?: number;
   /** The speed at which text backspaces in milliseconds. Recommended to be twice
-   * type speed. */
+   * the duration of type speed. Value may need to be adjusted depending on text
+   * and other speed variables. */
   backspaceSpeed?: number;
   /** The delay in milliseconds between the end of typing a line and backspacing that
-   * line in a multiline array of text and starting the next line. Recommended to be
-   * half of type speed.
+   * line in a multiline array of text and starting the next line.Value may need to be
+   * adjusted depending on text and other speed variables.
    */
   backspaceDelay?: number;
   /** The delay in milliseconds between the end of backspacing one line in a multiline
-   * array of text and starting the next line. Recommended to be half of type speed.
+   * array of text and starting the next line. Value may need to be adjusted depending on
+   * text and other speed variables.
    */
   multilineDelay?: number;
-  /** When this value changes, trigger typing. */
-  typeTrigger?: any;
-  /** When this value changes, trigger backspacing. */
-  backspaceTrigger?: any;
+  /** How long in ms after typing ends to stop showing cursor. */
+  cursorTimeout?: number;
   /** The string to display as the flashing cursor. */
   cursorString?: string;
+  /** Toggle whether or not to show the cursor. */
+  showCursor?: boolean;
+  /** Toggles whether or not to hide the cursor when typing animation is done. */
+  hideCursorOnAnimationFinished?: boolean;
+  /** Toggles whether or not to hide cursor before starting the animation. */
+  hideCursorBeforeAnimationStart?: boolean;
   /** Supresses typing animation. Useful for supressing animation on mobile devices
    * if the animation normally occurs on hover, for example.
    */
   suppressAnimation?: boolean;
+  /** Toggles whether or not to display the curor if animation is suppressed */
+  showCursorIfAnimationSuppressed?: boolean;
   /** Toggles whether or not text is displayed if typing animation is suppressed. */
   showTextIfAnimationSuppressed?: boolean;
   /** For gradient text there is the limitation of not being able to show blinking
-   * cursor normally. A div background must be toggled between transparent and 
-   * color of underlying background. Because background color is a keyframe CSS 
-   * property that cannot be dynamically set, only use this for specific use case 
-   * where the background color is known to be correct */
+   * cursor normally. A div background must be toggled between transparent and
+   * color of underlying background. Because background color is a keyframe CSS
+   * property that cannot be dynamically set, only use this for specific use case
+   * where the background color is known to be correct. */
   hasGradientText?: boolean;
 };
 
-const TypedText = ({
-  text,
-  element = "span",
-  elementProps = null,
-  elementStyles = null,
-  typeSpeed = 100,
-  startDelay = 0,
-  backspaceSpeed = 50,
-  backspaceDelay = 1000,
-  multilineDelay = 1000,
-  typeTrigger = null,
-  backspaceTrigger = null,
-  cursorString = "|",
-  suppressAnimation = false,
-  showTextIfAnimationSuppressed = false,
-  hasGradientText = false,
-}: TypedTextProps) => {
-  const [typedText, setTypedText] = useState("");
-
-  const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      typeEffect();
-    }, startDelay);
-  }, []);
-
-  // useEffect(() => {
-  //   // only trigger effect on actual update
-  //   if (isFirstRender.current) {
-  //     isFirstRender.current = false;
-  //   } else {
-  //     typeEffect();
-  //   }
-  // }, [typeTrigger]);
-
-  // useEffect(() => {
-  //   // only trigger effect on actual update
-  //   if (isFirstRender.current) {
-  //     isFirstRender.current = false;
-  //   } else {
-  //     backspaceEffect();
-  //   }
-  // }, [backspaceTrigger]);
-
-  const typeEffect = (
-    string = "",
-    currStrIdx = 0,
-    currStrArrayIdx = 0,
-    fullText = typeof text === "string" ? text : text[currStrArrayIdx]
+const TypedText = forwardRef<TypedTextRef, TypedTextProps>(
+  (
+    {
+      text,
+      element = "span",
+      elementProps = null,
+      elementStyles = null,
+      onStart = true,
+      loop = false,
+      typeSpeed = 50,
+      startDelay = 0,
+      startTypingDelay = 0,
+      backspaceSpeed = 25,
+      backspaceDelay = 1000,
+      multilineDelay = 1000,
+      cursorTimeout = 1000,
+      cursorString = "|",
+      showCursor = true,
+      hideCursorOnAnimationFinished = false,
+      hideCursorBeforeAnimationStart = true,
+      suppressAnimation = false,
+      showCursorIfAnimationSuppressed = false,
+      showTextIfAnimationSuppressed = false,
+      hasGradientText = false,
+    },
+    ref
   ) => {
-    if (string.length < fullText.length) {
-      const newString = string.concat(fullText.charAt(currStrIdx));
-      setTypedText(newString);
-      setTimeout(
-        () => typeEffect(newString, currStrIdx + 1, currStrArrayIdx),
-        typeSpeed
-      );
-    } else {
-      if (Array.isArray(text) && currStrArrayIdx < text.length - 1) {
-        setTimeout(() => {
-          backspaceEffect(text[currStrArrayIdx]).then(() => {
-            setTimeout(
-              () => typeEffect("", 0, currStrArrayIdx + 1),
-              multilineDelay
-            );
-          });
-        }, backspaceDelay);
+    const [typedText, setTypedText] = useState("");
+    const [cursorVisible, setCursorVisible] = useState(true);
+
+    useImperativeHandle(ref, () => ({
+      type: () => {
+        typeEffect();
+      },
+      backspace: () => {
+        backspaceEffect();
+      },
+    }));
+
+    useEffect(() => {
+      if (hideCursorBeforeAnimationStart) {
+        setCursorVisible(false);
       }
-    }
-  };
 
-  const backspaceEffect = async (
-    string = text,
-    currStrIdx = string.length - 1
-  ) => {
-    // can't backspace on an array of text
-    if (Array.isArray(string)) {
-      return;
-    }
+      if (onStart) {
+        setTimeout(() => {
+          if (hideCursorBeforeAnimationStart) {
+            setCursorVisible(true);
+          }
 
-    if (typeof string === "string" && string.length > 0) {
-      const newString = string.substring(0, currStrIdx);
-      setTypedText(newString);
-      setTimeout(
-        () => backspaceEffect(newString, currStrIdx - 1),
-        backspaceSpeed
-      );
-    }
-  };
+          setTimeout(() => {
+            typeEffect();
+          }, startTypingDelay);
+        }, startDelay);
+      }
+    }, []);
 
-  return (
-    <>
-      {!suppressAnimation
-        ? React.createElement(
-            element,
-            (elementProps = {
-              style: elementStyles,
-              ...elementProps,
-            }),
-            `${typedText}`,
-            React.createElement(
-              "span",
+    const typeEffect = (
+      string = "",
+      currStrIdx = 0,
+      currStrArrayIdx = 0,
+      fullText = typeof text === "string" ? text : text[currStrArrayIdx]
+    ) => {
+      if (string.length < fullText.length) {
+        const newString = string.concat(fullText.charAt(currStrIdx));
+        setTypedText(newString);
+        setTimeout(
+          () => typeEffect(newString, currStrIdx + 1, currStrArrayIdx),
+          typeSpeed
+        );
+      } else {
+        if (Array.isArray(text)) {
+          if (currStrArrayIdx < text.length - 1) {
+            setTimeout(() => {
+              backspaceEffect(text[currStrArrayIdx]).then(() => {
+                setTimeout(
+                  () => typeEffect("", 0, currStrArrayIdx + 1),
+                  multilineDelay
+                );
+              });
+            }, backspaceDelay);
+          } else if (currStrArrayIdx === text.length - 1 && loop) {
+            setTimeout(() => {
+              backspaceEffect(text[currStrArrayIdx]).then(() => {
+                setTimeout(() => typeEffect("", 0, 0), multilineDelay);
+              });
+            }, backspaceDelay);
+          }
+        } else {
+          setTimeout(() => {
+            setCursorVisible(!hideCursorOnAnimationFinished);
+          }, cursorTimeout);
+        }
+      }
+    };
+
+    const backspaceEffect = async (
+      string = text,
+      currStrIdx = string.length - 1
+    ) => {
+      // can't backspace on an array of text
+      if (Array.isArray(string)) {
+        return;
+      }
+
+      if (typeof string === "string" && string.length > 0) {
+        const newString = string.substring(0, currStrIdx);
+        setTypedText(newString);
+        setTimeout(
+          () => backspaceEffect(newString, currStrIdx - 1),
+          backspaceSpeed
+        );
+      }
+    };
+
+    return (
+      <>
+        {!suppressAnimation
+          ? createElement(
+              element,
               (elementProps = {
-                className: `${
-                  hasGradientText ? "styleForGradientText" : "defaultStyle"
-                }`,
+                style: elementStyles,
+                ...elementProps,
               }),
-              `${cursorString}`
+              `${typedText}`,
+              createElement(
+                "span",
+                (elementProps = {
+                  className: `${
+                    hasGradientText ? "styleForGradientText" : "defaultStyle"
+                  }`,
+                }),
+                `${showCursor && cursorVisible ? cursorString : ""}`
+              )
             )
-          )
-        : suppressAnimation &&
-          showTextIfAnimationSuppressed &&
-          React.createElement(
-            element,
-            (elementProps = {
-              style: elementStyles,
-              ...elementProps,
-            }),
-            `${text}`
-          )}
-    </>
-  );
-};
+          : suppressAnimation &&
+            createElement(
+              element,
+              (elementProps = {
+                style: elementStyles,
+                ...elementProps,
+              }),
+              `${showTextIfAnimationSuppressed ? text : ""}`,
+              createElement(
+                "span",
+                (elementProps = {
+                  className: `${
+                    hasGradientText ? "styleForGradientText" : "defaultStyle"
+                  }`,
+                }),
+                `${
+                  showCursorIfAnimationSuppressed && cursorVisible
+                    ? cursorString
+                    : ""
+                }`
+              )
+            )}
+      </>
+    );
+  }
+);
 
 export default TypedText;
