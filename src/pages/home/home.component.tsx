@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import TypedText, {
   TypedTextRef,
 } from "../../components/typed-text/typed-text.component";
+import { palette } from "../../global.styles";
 
 import * as S from "./home.styles";
 

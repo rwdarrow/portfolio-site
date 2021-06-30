@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 import { palette } from "../../global.styles";
 
-const gradientAnimation = keyframes`
+const gradientKeyframes = keyframes`
   0% { background-position: 0% 0%; }
   100% { background-position: 100% 0%; }
 `;
@@ -19,9 +19,13 @@ const gradient = css`
     ${palette.lightAccent},
     ${palette.mainBrand}
   );
+  background-size: 200%;
+`;
+
+const gradientAnimation = css`
   background-size: 400% 100%;
   transform: rotateZ(360deg);
-  animation: ${gradientAnimation} 5s linear infinite;
+  animation: ${gradientKeyframes} 1s linear infinite;
 `;
 
 export const Header = styled.span`
@@ -40,7 +44,7 @@ export const LogoBorder = styled.div`
 
   &:hover {
     @media (hover: hover) and (pointer: fine) {
-      animation: ${gradientAnimation} 1s linear infinite;
+      ${gradientAnimation}
     }
   }
 `;
@@ -71,7 +75,7 @@ export const Logo = styled(Link)`
 
   &:hover {
     @media (hover: hover) and (pointer: fine) {
-      animation: ${gradientAnimation} 1s linear infinite;
+      ${gradientAnimation}
     }
   }
 `;

@@ -9,11 +9,6 @@ export const HomePageStyle = createGlobalStyle`
   }
 `;
 
-const gradientAnimation = keyframes`
-  0% { background-position: 0% 0%; }
-  100% { background-position: 100% 0%; }
-`;
-
 export const BreakerBorder = styled.div`
   position: absolute;
   top: 0;
@@ -26,13 +21,9 @@ export const BreakerBorder = styled.div`
     90deg,
     ${palette.lightAccent},
     ${palette.mainBrand},
-    ${palette.darkAccent},
-    ${palette.lightAccent},
-    ${palette.mainBrand}
+    ${palette.darkAccent}
   );
-  background-size: 400% 100%;
-  transform: rotateZ(360deg);
-  animation: ${gradientAnimation} 5s linear infinite;
+  background-size: 100%;
 `;
 
 export const Breaker = styled.div`
