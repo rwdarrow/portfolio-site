@@ -19,7 +19,10 @@ const App = () => {
   return (
     <>
       <GlobalStyle />
-      <BrowserRouter>
+      <Header />
+      <HomePage />
+      <About />
+      {/* <BrowserRouter>
         <Header />
         <Switch>
           <Route exact path={routes.home.route} component={HomePage} />
@@ -31,7 +34,7 @@ const App = () => {
           <Route exact path={routes.contact.route} component={Contact} />
           <Route component={NotFound} />
         </Switch>
-      </BrowserRouter>
+      </BrowserRouter> */}
     </>
   );
 };

@@ -32,7 +32,11 @@ export const Header = styled.span`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0.5rem;
+  padding: 1.5rem 1.5rem;
+
+  @media screen and (max-width: 768px) {
+    padding: 0.5rem 0.5rem;
+  }
 `;
 
 export const LogoBorder = styled.div`
@@ -40,7 +44,7 @@ export const LogoBorder = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0.16rem;
+  padding: 0.2rem;
 
   &:hover {
     @media (hover: hover) and (pointer: fine) {
@@ -53,7 +57,7 @@ export const LogoBackground = styled.div`
   background: ${palette.lightPrimary};
 `;
 
-export const Logo = styled(Link)`
+export const Logo = styled.div`
   ${gradient}
   cursor: pointer;
   font-family: "Source Code Pro", monospace;
@@ -79,6 +83,33 @@ export const Logo = styled(Link)`
     }
   }
 `;
+
+// export const Logo = styled(Link)`
+//   ${gradient}
+//   cursor: pointer;
+//   font-family: "Source Code Pro", monospace;
+//   font-size: larger;
+//   padding: 0.12rem;
+//   margin-right: 0.34em;
+//   display: inline;
+//   position: relative;
+//   background-clip: text;
+//   -webkit-background-clip: text;
+//   -webkit-text-fill-color: transparent;
+//   box-decoration-break: clone;
+//   -webkit-box-decoration-break: clone;
+//   border: none;
+
+//   &:focus {
+//     outline-width: 0 !important;
+//   }
+
+//   &:hover {
+//     @media (hover: hover) and (pointer: fine) {
+//       ${gradientAnimation}
+//     }
+//   }
+// `;
 
 /* Animation for blinking cursor in logo/homepage link*/
 const blink = () => keyframes`
@@ -153,12 +184,10 @@ interface NavMenuButtonProps {
   open: boolean;
 }
 
-export const NavMenuButton = styled.button<NavMenuButtonProps>`
+export const NavMenuButton = styled.div<NavMenuButtonProps>`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  width: 1rem;
-  height: 1rem;
   cursor: pointer;
   padding: 0;
   margin-left: 1rem;
@@ -166,6 +195,7 @@ export const NavMenuButton = styled.button<NavMenuButtonProps>`
   background: transparent;
   transition: all 0.25s linear;
   z-index: 2;
+  padding: 20px 0 20px 20px;
 
   &:focus {
     outline: none;
@@ -180,10 +210,11 @@ export const NavMenuButton = styled.button<NavMenuButtonProps>`
   & > div {
     width: 1rem;
     height: 0.1rem;
+    margin-bottom: 0.2rem;
     background: ${palette.mainBrand};
     transition: all 0.5s ease-in-out;
     position: relative;
-    transform-origin: 1px;
+    transform-origin: 0.05rem;
 
     @media screen and (max-width: 768px) {
       background: ${(props) =>

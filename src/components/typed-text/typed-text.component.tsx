@@ -5,6 +5,7 @@ import {
   useEffect,
   useImperativeHandle,
   createElement,
+  Fragment,
 } from "react";
 
 import "./type-text.css";
@@ -29,25 +30,20 @@ type TypedTextProps = {
   onStart?: boolean;
   /** Toggles whether or not to loop the animation. */
   loop?: boolean;
-  /** The speed at which text type out in milliseconds. Recommended to be half
-   * the duration of backspace speed. */
+  /** The speed at which text type out in milliseconds. */
   typeSpeed?: number;
   /** How long after mounting the component to trigger the animation start in ms.*/
   startDelay?: number;
   /** How long after starting the animation to start typing. */
   startTypingDelay?: number;
-  /** The speed at which text backspaces in milliseconds. Recommended to be twice
-   * the duration of type speed. Value may need to be adjusted depending on text
-   * and other speed variables. */
+  /** The speed at which text backspaces in milliseconds. */
   backspaceSpeed?: number;
   /** The delay in milliseconds between the end of typing a line and backspacing that
-   * line in a multiline array of text and starting the next line.Value may need to be
-   * adjusted depending on text and other speed variables.
+   * line in a multiline array of text and starting the next line.
    */
   backspaceDelay?: number;
   /** The delay in milliseconds between the end of backspacing one line in a multiline
-   * array of text and starting the next line. Value may need to be adjusted depending on
-   * text and other speed variables.
+   * array of text and starting the next line.
    */
   multilineDelay?: number;
   /** How long in ms after typing ends to stop showing cursor. */
@@ -115,59 +111,60 @@ const TypedText = forwardRef<TypedTextRef, TypedTextProps>(
       },
     }));
 
+    const sleep = (delay: number) =>
+      new Promise((resolve) => setTimeout(resolve, delay));
+
+    const start = async () => {
+      await sleep(startDelay);
+      if (hideCursorBeforeAnimationStart) {
+        setCursorVisible(true);
+      }
+
+      await sleep(startTypingDelay);
+      typeEffect();
+    };
+
+    // handle starting the animation on component mount
     useEffect(() => {
       if (hideCursorBeforeAnimationStart) {
         setCursorVisible(false);
       }
 
       if (onStart) {
-        setTimeout(() => {
-          if (hideCursorBeforeAnimationStart) {
-            setCursorVisible(true);
-          }
-
-          setTimeout(() => {
-            typeEffect();
-          }, startTypingDelay);
-        }, startDelay);
+        start();
       }
     }, []);
 
-    const typeEffect = (
+    const typeEffect = async (
       string = "",
       currStrIdx = 0,
       currStrArrayIdx = 0,
       fullText = typeof text === "string" ? text : text[currStrArrayIdx]
     ) => {
+      // typing of a line
       if (string.length < fullText.length) {
         const newString = string.concat(fullText.charAt(currStrIdx));
+
         setTypedText(newString);
-        setTimeout(
-          () => typeEffect(newString, currStrIdx + 1, currStrArrayIdx),
-          typeSpeed
-        );
+        await sleep(typeSpeed);
+        typeEffect(newString, currStrIdx + 1, currStrArrayIdx);
       } else {
+        // typing of multiple lines
         if (Array.isArray(text)) {
           if (currStrArrayIdx < text.length - 1) {
-            setTimeout(() => {
-              backspaceEffect(text[currStrArrayIdx]).then(() => {
-                setTimeout(
-                  () => typeEffect("", 0, currStrArrayIdx + 1),
-                  multilineDelay
-                );
-              });
-            }, backspaceDelay);
+            await sleep(backspaceDelay);
+            backspaceEffect(text[currStrArrayIdx]);
+
+            // wait for current line to complete backspacing AND for delay to start next line
+            await sleep(text[currStrArrayIdx].length * backspaceSpeed);
+            await sleep(multilineDelay);
+            typeEffect("", 0, currStrArrayIdx + 1);
           } else if (currStrArrayIdx === text.length - 1 && loop) {
-            setTimeout(() => {
-              backspaceEffect(text[currStrArrayIdx]).then(() => {
-                setTimeout(() => typeEffect("", 0, 0), multilineDelay);
-              });
-            }, backspaceDelay);
+            typeEffect("", 0, 0);
           }
         } else {
-          setTimeout(() => {
-            setCursorVisible(!hideCursorOnAnimationFinished);
-          }, cursorTimeout);
+          await sleep(cursorTimeout);
+          setCursorVisible(!hideCursorOnAnimationFinished);
         }
       }
     };
@@ -183,57 +180,42 @@ const TypedText = forwardRef<TypedTextRef, TypedTextProps>(
 
       if (typeof string === "string" && string.length > 0) {
         const newString = string.substring(0, currStrIdx);
+
         setTypedText(newString);
-        setTimeout(
-          () => backspaceEffect(newString, currStrIdx - 1),
-          backspaceSpeed
-        );
+        await sleep(backspaceSpeed);
+        backspaceEffect(newString, currStrIdx - 1);
       }
     };
 
-    return (
-      <>
-        {!suppressAnimation
-          ? createElement(
-              element,
-              (elementProps = {
-                style: elementStyles,
-                ...elementProps,
-              }),
-              `${typedText}`,
-              createElement(
-                "span",
-                (elementProps = {
-                  className: `${
-                    hasGradientText ? "styleForGradientText" : "defaultStyle"
-                  }`,
-                }),
-                `${showCursor && cursorVisible ? cursorString : ""}`
-              )
-            )
-          : suppressAnimation &&
-            createElement(
-              element,
-              (elementProps = {
-                style: elementStyles,
-                ...elementProps,
-              }),
-              `${showTextIfAnimationSuppressed ? text : ""}`,
-              createElement(
-                "span",
-                (elementProps = {
-                  className: `${
-                    hasGradientText ? "styleForGradientText" : "defaultStyle"
-                  }`,
-                }),
-                `${
-                  showCursorIfAnimationSuppressed && cursorVisible
-                    ? cursorString
-                    : ""
-                }`
-              )
-            )}
-      </>
+    return createElement(
+      Fragment,
+      null,
+      !suppressAnimation &&
+        createElement(
+          element,
+          (elementProps = {
+            style: elementStyles,
+            ...elementProps,
+          }),
+          suppressAnimation
+            ? showTextIfAnimationSuppressed
+              ? text
+              : ""
+            : typedText,
+          createElement(
+            "span",
+            (elementProps = {
+              className: hasGradientText
+                ? "styleForGradientText"
+                : "defaultStyle",
+            }),
+            showCursor && cursorVisible
+              ? cursorString
+              : showCursorIfAnimationSuppressed
+              ? cursorString
+              : ""
+          )
+        )
     );
   }
 );

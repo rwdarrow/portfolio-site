@@ -18,7 +18,7 @@ import {
 } from "../../routes";
 
 const Header = () => {
-  const currentRoute = useLocation().pathname;
+  //const currentRoute = useLocation().pathname;
 
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isAnimationSuppressed, setIsAnimationSuppressed] = useState(false);
@@ -47,13 +47,15 @@ const Header = () => {
         onTouchStart={() => setIsAnimationSuppressed(true)}
       >
         <S.LogoBackground>
-          <S.Logo to={home.route}>
+          <S.Logo>
             <span>&gt;rwd</span>
             <TypedText
               ref={typedTextRef}
               onStart={false}
               text={"/home"}
               element="span"
+              typeSpeed={80}
+              backspaceSpeed={50}
               cursorString="_"
               hasGradientText={true}
               suppressAnimation={isAnimationSuppressed}
@@ -85,7 +87,7 @@ const Header = () => {
                 ease: [0.04, 0.62, 0.23, 0.98],
               }}
             >
-              <S.OptionLink
+              {/* <S.OptionLink
                 selected={currentRoute === about.route}
                 to={about.route}
                 onClick={() => setIsNavbarOpen(!isNavbarOpen)}
@@ -131,7 +133,7 @@ const Header = () => {
                 onClick={() => setIsNavbarOpen(!isNavbarOpen)}
               >
                 {contact.name}
-              </S.OptionLink>
+              </S.OptionLink> */}
             </S.NavbarContent>
           )}
         </AnimatePresence>
