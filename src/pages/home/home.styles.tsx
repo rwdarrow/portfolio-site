@@ -31,8 +31,7 @@ export const Border = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  height: 0.5rem;
-  z-index: -1;
+  height: 15px;
 `;
 
 export const Content = styled.div`
@@ -40,10 +39,12 @@ export const Content = styled.div`
   padding: 1rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  height: 100vh;
 
   @media screen and (max-width: 768px) {
     flex-direction: column;
+    justify-content: center;
   }
 `;
 

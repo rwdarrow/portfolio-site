@@ -15,10 +15,6 @@ export const GlobalStyle = createGlobalStyle`
     @media screen and (max-width: 768px) {
       font-size: 20px;
     }
-
-    /* @media screen and (aspect-ratio: 16 / 9) {
-      font-size: 37px;
-    } */
   }
 
   body {
@@ -26,6 +22,7 @@ export const GlobalStyle = createGlobalStyle`
     background: ${palette.lightPrimary};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    margin: 0;
   }
 
   a {

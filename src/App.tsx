@@ -17,12 +17,12 @@ import NotFound from "./pages/not-found/not-found.component";
 
 const App = () => {
   return (
-    <>
-      <GlobalStyle />
-      <Header />
-      <HomePage />
-      <About />
-      {/* <BrowserRouter>
+      <>
+        <GlobalStyle />
+        <Header />
+        <HomePage />
+        <About />
+        {/* <BrowserRouter>
         <Header />
         <Switch>
           <Route exact path={routes.home.route} component={HomePage} />
@@ -35,7 +35,7 @@ const App = () => {
           <Route component={NotFound} />
         </Switch>
       </BrowserRouter> */}
-    </>
+      </>
   );
 };
 

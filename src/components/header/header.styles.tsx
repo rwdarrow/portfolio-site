@@ -29,14 +29,14 @@ const gradientAnimation = css`
 `;
 
 export const Header = styled.span`
+  position: fixed;
+  width: 100vw;
+  background: ${palette.lightPrimary};
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 1.5rem;
-
-  @media screen and (max-width: 768px) {
-    padding: 0.5rem 0.5rem;
-  }
+  padding: 0.5rem;
+  z-index: 1;
 `;
 
 export const LogoBorder = styled.div`
@@ -191,6 +191,7 @@ export const NavMenuButton = styled.div<NavMenuButtonProps>`
   cursor: pointer;
   padding: 0;
   margin-left: 1rem;
+  margin-right: 0.5rem;
   border: none;
   background: transparent;
   transition: all 0.25s linear;
