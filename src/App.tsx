@@ -2,7 +2,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import { GlobalStyle } from "./global.styles";
 
-import * as routes from "./routes";
+import { routes } from "./routes";
 
 import Header from "./components/header/header.component";
 
@@ -17,25 +17,17 @@ import NotFound from "./pages/not-found/not-found.component";
 
 const App = () => {
   return (
-      <>
-        <GlobalStyle />
-        <Header />
-        <HomePage />
-        <About />
-        {/* <BrowserRouter>
-        <Header />
+    <div style={{ verticalAlign: "top" }}>
+      <GlobalStyle />
+      <Header />
+      <HomePage />
+      <About />
+      <BrowserRouter>
         <Switch>
-          <Route exact path={routes.home.route} component={HomePage} />
-          <Route exact path={routes.about.route} component={About} />
-          <Route exact path={routes.skills.route} component={Skills} />
-          <Route exact path={routes.experience.route} component={Experience} />
-          <Route exact path={routes.education.route} component={Education} />
-          <Route exact path={routes.projects.route} component={Projects} />
-          <Route exact path={routes.contact.route} component={Contact} />
           <Route component={NotFound} />
         </Switch>
-      </BrowserRouter> */}
-      </>
+      </BrowserRouter>
+    </div>
   );
 };
 

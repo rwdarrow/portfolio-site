@@ -143,18 +143,17 @@ export const NavbarContent = styled(motion.div)`
     background: ${palette.mainBrand};
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     padding: 25px;
   }
 `;
 
-interface OptionLinkProps {
-  selected: boolean;
-}
-
-export const OptionLink = styled(Link)<OptionLinkProps>`
+export const OptionLink = styled.button`
+  background: transparent;
+  font-size: 1rem;
+  border: none;
   cursor: pointer;
-  color: ${(props) =>
-    props.selected ? palette.darkAccent : palette.mainBrand};
+  color: ${palette.mainBrand};
   transition: all ease-in-out 0.25s;
 
   @media screen and (max-width: 768px) {

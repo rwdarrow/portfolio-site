@@ -1,4 +1,9 @@
 import { useRef } from "react";
+import { useTransform, useViewportScroll } from "framer-motion";
+
+import { routes } from "../../routes";
+
+import useWindowDimensions from "../../hooks/use-window-dimensions.hook";
 
 import TypedText, {
   TypedTextRef,
@@ -9,11 +14,27 @@ import * as S from "./home.styles";
 const HomePage = () => {
   const typedTextRef = useRef<TypedTextRef>(null);
 
+  const { scrollYProgress } = useViewportScroll();
+  const { width } = useWindowDimensions();
+
+  // slide off screen to the left on scroll
+  const leftXPosAnimation = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    ["0%", "-50%", "-100%"]
+  );
+
+  // slide off screen to the right on scroll
+  const rightXPosAnimation = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    width > 768 ? ["0%", "100%", "150%"] : ["0%", "250%", "350%"]
+  );
+
   return (
-    <div style={{ height: "100vh" }}>
-      <S.HomePageStyle />
+    <div id={routes.home.id} style={{ height: "100vh" }}>
       <S.Content>
-        <S.TextContainer>
+        <S.TextContainer style={{ x: leftXPosAnimation }}>
           <TypedText
             ref={typedTextRef}
             text="Hi, I'm Robert Darrow"
@@ -37,6 +58,7 @@ const HomePage = () => {
           />
         </S.TextContainer>
         <S.ArrowContainer
+          style={{ x: rightXPosAnimation }}
           initial="hidden"
           animate="visible"
           variants={{

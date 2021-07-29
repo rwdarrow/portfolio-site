@@ -6,14 +6,6 @@ import { ArrowThinDown } from "@styled-icons/zondicons";
 
 import withGradient from "../../components/with-gradient/with-gradient.component";
 
-export const HomePageStyle = createGlobalStyle`
-  body {
-    background: ${palette.lightPrimary};
-    overflow-x: hidden;
-    color: ${palette.darkPrimary};
-  }
-`;
-
 const gradient = css`
   background: ${palette.mainBrand};
   background: linear-gradient(
@@ -41,6 +33,7 @@ export const Content = styled.div`
   align-items: center;
   justify-content: space-evenly;
   height: 100vh;
+  overflow: hidden;
 
   @media screen and (max-width: 768px) {
     flex-direction: column;
@@ -48,7 +41,7 @@ export const Content = styled.div`
   }
 `;
 
-export const TextContainer = styled.div`
+export const TextContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
 `;

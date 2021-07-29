@@ -1,8 +1,11 @@
+import * as S from "./about.styles"
+
+import { routes } from "../../routes"
+
 const About = () => {
   return (
-    <div style={{ height: "100vh" }}>
-      <h1>About</h1>
-    </div>
+    <S.AboutPageContainer id={routes.about.route.substring(2)}>
+    </S.AboutPageContainer>
   );
 };
 

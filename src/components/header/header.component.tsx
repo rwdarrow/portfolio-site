@@ -1,25 +1,15 @@
 import { useState, useRef } from "react";
 import { AnimatePresence } from "framer-motion";
-import { useLocation } from "react-router-dom";
+
+import { routes } from "../../routes";
 
 import TypedText, { TypedTextRef } from "../typed-text/typed-text.component";
 
 import useWindowDimensions from "../../hooks/use-window-dimensions.hook";
 
 import * as S from "./header.styles";
-import {
-  home,
-  about,
-  skills,
-  experience,
-  education,
-  projects,
-  contact,
-} from "../../routes";
 
 const Header = () => {
-  //const currentRoute = useLocation().pathname;
-
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isAnimationSuppressed, setIsAnimationSuppressed] = useState(false);
 
@@ -39,6 +29,13 @@ const Header = () => {
     }
   };
 
+  const scrollToSection = (sectionId: string) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const sectionLinks = Object.values(routes);
+  const lastSection = sectionLinks[sectionLinks.length - 1];
+
   return (
     <S.Header>
       <S.LogoBorder
@@ -47,7 +44,7 @@ const Header = () => {
         onTouchStart={() => setIsAnimationSuppressed(true)}
       >
         <S.LogoBackground>
-          <S.Logo>
+          <S.Logo onClick={() => scrollToSection(routes.home.id)}>
             <span>&gt;rwd</span>
             <TypedText
               ref={typedTextRef}
@@ -87,53 +84,22 @@ const Header = () => {
                 ease: [0.04, 0.62, 0.23, 0.98],
               }}
             >
-              {/* <S.OptionLink
-                selected={currentRoute === about.route}
-                to={about.route}
-                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
-              >
-                {about.name}
-              </S.OptionLink>
-              <S.Spacer>{"//"}</S.Spacer>
-              <S.OptionLink
-                selected={currentRoute === skills.route}
-                to={skills.route}
-                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
-              >
-                {skills.name}
-              </S.OptionLink>
-              <S.Spacer>{"//"}</S.Spacer>
-              <S.OptionLink
-                selected={currentRoute === experience.route}
-                to={experience.route}
-                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
-              >
-                {experience.name}
-              </S.OptionLink>
-              <S.Spacer>{"//"}</S.Spacer>
-              <S.OptionLink
-                selected={currentRoute === education.route}
-                to={education.route}
-                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
-              >
-                {education.name}
-              </S.OptionLink>
-              <S.Spacer>{"//"}</S.Spacer>
-              <S.OptionLink
-                selected={currentRoute === projects.route}
-                to={projects.route}
-                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
-              >
-                {projects.name}
-              </S.OptionLink>
-              <S.Spacer>{"//"}</S.Spacer>
-              <S.OptionLink
-                selected={currentRoute === contact.route}
-                to={contact.route}
-                onClick={() => setIsNavbarOpen(!isNavbarOpen)}
-              >
-                {contact.name}
-              </S.OptionLink> */}
+              {sectionLinks.map((value) => {
+                return (
+                  <>
+                    <S.OptionLink
+                      key={value.id}
+                      onClick={() => {
+                        scrollToSection(value.id);
+                        setIsNavbarOpen(!isNavbarOpen);
+                      }}
+                    >
+                      {value.name}
+                    </S.OptionLink>
+                    {value !== lastSection && <S.Spacer>{"//"}</S.Spacer>}
+                  </>
+                );
+              })}
             </S.NavbarContent>
           )}
         </AnimatePresence>
